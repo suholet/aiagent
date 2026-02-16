@@ -2,6 +2,7 @@ import os, argparse
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from prompts import system_prompt
 
 def main():
     parser = argparse.ArgumentParser(description="AI Chatbot")
@@ -17,9 +18,16 @@ def main():
         raise RuntimeError("Can't load API key")
     
     client = genai.Client(api_key=api_key)
-    model = "gemini-2.5-flash"
+    model_name = "gemini-2.5-flash"
     messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
-    response = client.models.generate_content(model=model, contents=messages)
+    response = client.models.generate_content(
+        model=model_name,
+        contents=messages,
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=0
+        ),
+)
 
     if response.usage_metadata is None:
         raise RuntimeError("Problem with Gemini API call")

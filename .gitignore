@@ -12,5 +12,7 @@ wheels/
 # API Key
 .env
 
-# Tests
-*.txt
+# If you want to ignore only test output files, target them specifically:
+# test_output/
+# *.out
+# *.log
