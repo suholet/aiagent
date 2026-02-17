@@ -1,5 +1,20 @@
 import os
+from google.genai import types
 from config import MAX_CHARS
+
+schema_get_file_content = types.FunctionDeclaration(
+        name="get_file_content",
+        description="Reads the first MAX_CHARS characters from the file at the specified path relative to the working directory, providing the comment if the file is larger and was trunkated",
+        parameters=types.Schema(
+            type=types.Type.OBJECT,
+            properties={
+                "file_path": types.Schema(
+                    type=types.Type.STRING,
+                    description="File path to read content from the file, relative to the working directory",
+                ),
+            },
+        ),
+    )
 
 def get_file_content(working_directory, file_path):
     working_dir_abs = os.path.abspath(working_directory)

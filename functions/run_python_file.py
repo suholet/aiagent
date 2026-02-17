@@ -1,4 +1,24 @@
 import os, subprocess
+from google.genai import types
+
+schema_run_python_file = types.FunctionDeclaration(
+        name="run_python_file",
+        description="Executes the python script in a file at the specified path relative to the working directory. Returns STDOUT and STDERR as a result of execution.",
+        parameters=types.Schema(
+            type=types.Type.OBJECT,
+            properties={
+                "file_path": types.Schema(
+                    type=types.Type.STRING,
+                    description="File path to execute the script in a file, relative to the working directory",
+                ),
+                "args": types.Schema(
+                    type=types.Type.ARRAY,
+                    items=types.Schema(type=types.Type.STRING),
+                    description="Optional command-line arguments",
+                ),
+            },
+        ),
+    )
 
 def run_python_file(working_directory, file_path, args=None):
     working_dir_abs = os.path.abspath(working_directory)
