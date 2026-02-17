@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 def main():
     parser = argparse.ArgumentParser(description="AI Chatbot")
@@ -42,8 +42,24 @@ def main():
     
     function_calls = response.function_calls
     if function_calls != None:
+        function_results = []
         for function_call in function_calls:
             print(f"Calling function: {function_call.name}({function_call.args})")
+            function_call_result = call_function(function_call, args.verbose)
+            
+            if len(function_call_result.parts) == 0:
+                raise Exception("Error: empty function_call_result.parts")
+            
+            if function_call_result.parts[0].function_response == None:
+                raise Exception("Error: function_response is None")
+            
+            if function_call_result.parts[0].function_response.response == None:
+                raise Exception("Error: function_response.response is None")
+            
+            function_results.append(function_call_result.parts[0])
+
+            if args.verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
     else:
         print(response.text)
 
